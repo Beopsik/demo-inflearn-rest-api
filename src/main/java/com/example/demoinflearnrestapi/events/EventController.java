@@ -43,13 +43,12 @@ public class EventController {
         event.update();
         Event newEvent = this.eventRepository.save(event);
 
-        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        WebMvcLinkBuilder webMvcLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
         EventResource eventResource = new EventResource(newEvent);
-        eventResource.add(selfLinkBuilder.withSelfRel());
-        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        eventResource.add(webMvcLinkBuilder.withRel("update-event"));
         eventResource.add(linkTo(EventController.class).withRel("query-events"));
 
-        URI createdUri = selfLinkBuilder.toUri();
+        URI createdUri = webMvcLinkBuilder.toUri();
 
         return ResponseEntity.created(createdUri).body(eventResource);
     }
