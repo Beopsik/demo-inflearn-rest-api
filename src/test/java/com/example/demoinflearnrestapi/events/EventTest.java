@@ -39,7 +39,7 @@ public class EventTest {
 
 
     @SuppressWarnings("unused")
-    private static Stream<Arguments> paramsForTestFree() {
+    private static Stream<Arguments> testFree() {
         return Stream.of(
                 Arguments.of(0, 0, true),
                 Arguments.of(100, 0, false),
@@ -49,7 +49,7 @@ public class EventTest {
     }
 
     @ParameterizedTest
-    @MethodSource("paramsForTestFree")
+    @MethodSource
     public void testFree(int basePrice, int maxPrice, boolean isFree) {
         // Given
         Event event = Event.builder()
