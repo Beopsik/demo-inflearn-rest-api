@@ -1,6 +1,7 @@
 package com.example.demoinflearnrestapi.events;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
@@ -47,6 +48,7 @@ public class EventController {
         EventResource eventResource = new EventResource(newEvent);
         eventResource.add(webMvcLinkBuilder.withRel("update-event"));
         eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
 
         URI createdUri = webMvcLinkBuilder.toUri();
 
