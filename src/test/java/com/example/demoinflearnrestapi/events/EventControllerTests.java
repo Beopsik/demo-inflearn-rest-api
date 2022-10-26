@@ -2,13 +2,16 @@ package com.example.demoinflearnrestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -17,6 +20,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EventControllerTests {
@@ -29,6 +33,7 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
+    @DisplayName("정상적으로 이벤트를 생성하는 테스트")
     @Test
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
@@ -58,6 +63,7 @@ public class EventControllerTests {
                 .andDo(print());
     }
 
+    @DisplayName("입력 받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     @Test
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
@@ -81,6 +87,43 @@ public class EventControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(event)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @DisplayName("입력 값이 비어있는 경우에 에러가 발생하는 테스트")
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = new EventDto();
+
+        this.mockMvc.perform(post("/api/events/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaTypes.HAL_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
+    @Test
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("REST API Development with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2022, 10, 23, 0, 0))
+                .closeEnrollmentDateTime(LocalDateTime.of(2022, 10, 22, 23, 59))
+                .beginEventDateTime(LocalDateTime.of(2022, 10, 26, 14, 51))
+                .endEventDateTime(LocalDateTime.of(2022, 10, 25, 15, 0))
+                .basePrice(10000)
+                .maxPrice(200)
+                .limitOfEnrollment(200)
+                .location("상도동 리치빈스")
+                .build();
+
+        this.mockMvc.perform(post("/api/events/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(eventDto)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
