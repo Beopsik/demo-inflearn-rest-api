@@ -4,8 +4,11 @@ package com.example.demoinflearnrestapi.events;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,12 +37,19 @@ public class EventTest {
         assertThat(event.getDescription()).isEqualTo(description);
     }
 
+
+    @SuppressWarnings("unused")
+    private static Stream<Arguments> paramsForTestFree() {
+        return Stream.of(
+                Arguments.of(0, 0, true),
+                Arguments.of(100, 0, false),
+                Arguments.of(0, 100, false),
+                Arguments.of(100, 200, false)
+        );
+    }
+
     @ParameterizedTest
-    @CsvSource({
-            "0, 0, true",
-            "100, 0, false",
-            "0, 100, false"
-    })
+    @MethodSource("paramsForTestFree")
     public void testFree(int basePrice, int maxPrice, boolean isFree) {
         // Given
         Event event = Event.builder()
