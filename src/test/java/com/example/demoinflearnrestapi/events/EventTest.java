@@ -47,7 +47,6 @@ public class EventTest {
                 Arguments.of(100, 200, false)
         );
     }
-
     @ParameterizedTest
     @MethodSource
     public void testFree(int basePrice, int maxPrice, boolean isFree) {
@@ -64,28 +63,25 @@ public class EventTest {
         assertThat(event.isFree()).isEqualTo(isFree);
     }
 
-    @Test
-    public void testOffline() {
+    @SuppressWarnings("unused")
+    private static Stream<Arguments> testOffline() {
+        return Stream.of(
+                Arguments.of("중앙대학교 팀플실", true),
+                Arguments.of(null, false)
+        );
+    }
+    @ParameterizedTest
+    @MethodSource
+    public void testOffline(String location, boolean isOffline) {
         // Given
         Event event = Event.builder()
-                .location("중앙대학교 팀플실")
+                .location(location)
                 .build();
 
         // When
         event.update();
 
         // Then
-        assertThat(event.isOffline()).isTrue();
-
-
-        // Given
-        event = Event.builder()
-                .build();
-
-        // When
-        event.update();
-
-        // Then
-        assertThat(event.isOffline()).isFalse();
+        assertThat(event.isOffline()).isEqualTo(isOffline);
     }
 }
