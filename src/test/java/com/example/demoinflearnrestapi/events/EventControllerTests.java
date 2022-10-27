@@ -5,6 +5,7 @@ import com.example.demoinflearnrestapi.accounts.AccountRepository;
 import com.example.demoinflearnrestapi.accounts.AccountRole;
 import com.example.demoinflearnrestapi.accounts.AccountService;
 import com.example.demoinflearnrestapi.common.BaseControllerTest;
+import com.example.demoinflearnrestapi.configs.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @BeforeEach
     public void setUp() {
@@ -354,11 +358,8 @@ public class EventControllerTests extends BaseControllerTest {
         this.accountService.saveAccount(account);
 
         // When && Then
-        String clientId = "testClient";
-        String clientSecret = "testSecret";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
                 .param("username", email)
                 .param("password", password)
                 .param("grant_type", "password"));

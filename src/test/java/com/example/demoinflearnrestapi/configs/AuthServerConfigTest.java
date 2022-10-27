@@ -22,6 +22,9 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @DisplayName("인증 토큰을 발급 받는 테스트")
     @Test
     public void getAuthToken() throws Exception {
@@ -37,11 +40,8 @@ public class AuthServerConfigTest extends BaseControllerTest {
         this.accountService.saveAccount(account);
 
         // When && Then
-        String clientId = "testClient";
-        String clientSecret = "testSecret";
-
         this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
                 .param("username", email)
                 .param("password", password)
                 .param("grant_type", "password"))
