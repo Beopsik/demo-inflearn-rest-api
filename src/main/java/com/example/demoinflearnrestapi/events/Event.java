@@ -1,5 +1,6 @@
 package com.example.demoinflearnrestapi.events;
 
+import com.example.demoinflearnrestapi.accounts.Account;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,20 +31,13 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
-
+    @ManyToOne
+    private Account manager;
     public void update() {
         // Update free
-        if (this.basePrice == 0 && this.maxPrice == 0) {
-            this.free = true;
-        } else {
-            this.free = false;
-        }
+        this.free = this.basePrice == 0 && this.maxPrice == 0;
 
         // Update offline
-        if (this.location == null || this.location.isBlank()) {
-            this.offline = false;
-        } else {
-            this.offline = true;
-        }
+        this.offline = this.location != null && !this.location.isBlank();
     }
 }
