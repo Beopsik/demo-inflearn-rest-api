@@ -218,6 +218,28 @@ public class EventControllerTests extends BaseControllerTest {
                 .andDo(print());
     }
 
+    @DisplayName("인증한 상태에서 30개의 이벤트를 10개씩 조회하는데, 두 번째 페이지 조회하기 ")
+    @Test
+    public void queryEventsWithAuthentication() throws Exception {
+        // Given
+        IntStream.range(0, 30).forEach(this::generateEvent);
+
+        // When & Then
+        this.mockMvc.perform(get("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.create-event").exists())
+                .andDo(document("Query-events"))
+                .andDo(print());
+    }
+
     @DisplayName("기존의 이벤트 하나 조회하기")
     @Test
     public void getEvent() throws Exception {
