@@ -2,13 +2,15 @@ package com.example.demoinflearnrestapi.events;
 
 import com.example.demoinflearnrestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.*;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +34,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity<? extends RepresentationModel<?>> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
             return badRequest(errors);
         }
@@ -56,8 +58,15 @@ public class EventController {
 
         return ResponseEntity.created(createdUri).body(eventResource);
     }
-
-    private ResponseEntity badRequest(Errors errors) {
+    private ResponseEntity<? extends RepresentationModel<?>> badRequest(Errors errors) {
         return ResponseEntity.badRequest().body(new ErrorsResource(errors));
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedModel<EntityModel<Event>>> queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+        Page<Event> page = this.eventRepository.findAll(pageable);
+        PagedModel<EntityModel<Event>> pagedResources = assembler.toModel(page, EventResource::new);
+        pagedResources.add(Link.of("/docs/index.html#resources-events-list").withRel("profile"));
+        return ResponseEntity.ok(pagedResources);
     }
 }
