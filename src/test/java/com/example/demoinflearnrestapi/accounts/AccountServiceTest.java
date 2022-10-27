@@ -53,7 +53,7 @@ public class AccountServiceTest {
         // Nothing given
 
         // When && Then
-        String email = "test@email.com";
+        String email = "random@email.com";
         try {
             accountService.loadUserByUsername(email);
             fail("supposed to be failed");
