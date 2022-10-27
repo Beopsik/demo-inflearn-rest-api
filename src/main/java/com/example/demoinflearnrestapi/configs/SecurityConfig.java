@@ -53,9 +53,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .mvcMatchers("/docs/index.html").anonymous()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).anonymous();
+        http
+                .anonymous()
+                .and()
+                .formLogin()
+                .and()
+                .authorizeRequests()
+                .mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
+                .anyRequest().authenticated();
 
         return http.build();
     }
