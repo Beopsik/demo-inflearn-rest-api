@@ -24,13 +24,12 @@ public class AccountServiceTest {
 
     @Autowired
     AccountRepository accountRepository;
-    @DisplayName("이름으로 사용자 찾기")
+    @DisplayName("이메일로 사용자 찾기")
     @Test
-    public void findByUsername() {
+    public void findByUserEmail() {
         // Given
         String email = "test@email.com";
-        @SuppressWarnings("SpellCheckingInspection")
-        String password = "beobsik";
+        String password = "test1234";
         Account account = Account.builder()
                 .email(email)
                 .password(password)
