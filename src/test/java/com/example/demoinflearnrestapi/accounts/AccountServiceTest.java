@@ -6,13 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -24,6 +25,7 @@ public class AccountServiceTest {
 
     @Autowired
     AccountRepository accountRepository;
+
     @DisplayName("이메일로 사용자 찾기")
     @Test
     public void findByUserEmail() {
@@ -38,10 +40,24 @@ public class AccountServiceTest {
         this.accountRepository.save(account);
 
         // When
-        UserDetailsService userDetailsService = accountService;
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = accountService.loadUserByUsername(email);
 
         // Then
         assertThat(userDetails.getPassword()).isEqualTo(password);
+    }
+
+    @DisplayName("이메일로 사용자 찾기 실패")
+    @Test
+    public void findByUserEmailFail() {
+        // Nothing given
+
+        // When && Then
+        String email = "test@email.com";
+        try {
+            accountService.loadUserByUsername(email);
+            fail("supposed to be failed");
+        } catch (UsernameNotFoundException exception) {
+            assertThat(exception.getMessage()).containsSequence(email);
+        }
     }
 }
