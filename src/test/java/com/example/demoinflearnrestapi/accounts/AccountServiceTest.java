@@ -1,25 +1,19 @@
 package com.example.demoinflearnrestapi.accounts;
 
+import com.example.demoinflearnrestapi.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-public class AccountServiceTest {
+public class AccountServiceTest extends BaseTest {
 
     @Autowired
     AccountService accountService;
@@ -31,8 +25,8 @@ public class AccountServiceTest {
     @Test
     public void findByUserEmail() {
         // Given
-        String email = "test@email.com";
-        String password = "test1234";
+        String email = "testFind@email.com";
+        String password = "testFind1234";
         Account account = Account.builder()
                 .email(email)
                 .password(password)
@@ -53,7 +47,7 @@ public class AccountServiceTest {
         // Nothing given
 
         // When && Then
-        String email = "random@email.com";
+        String email = "noFound@email.com";
         try {
             accountService.loadUserByUsername(email);
             fail("supposed to be failed");

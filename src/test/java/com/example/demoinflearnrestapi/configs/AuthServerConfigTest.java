@@ -3,7 +3,7 @@ package com.example.demoinflearnrestapi.configs;
 import com.example.demoinflearnrestapi.accounts.Account;
 import com.example.demoinflearnrestapi.accounts.AccountRole;
 import com.example.demoinflearnrestapi.accounts.AccountService;
-import com.example.demoinflearnrestapi.common.BaseControllerTest;
+import com.example.demoinflearnrestapi.common.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AuthServerConfigTest extends BaseControllerTest {
+public class AuthServerConfigTest extends BaseTest {
 
     @Autowired
     AccountService accountService;
@@ -29,8 +28,8 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Test
     public void getAuthToken() throws Exception {
         // Given
-        String email = "test@email.com";
-        String password = "test1234";
+        String email = "testAuth@email.com";
+        String password = "testAuth1234";
         Account account = Account.builder()
                 .email(email)
                 .password(password)

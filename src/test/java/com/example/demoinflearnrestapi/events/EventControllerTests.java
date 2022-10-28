@@ -4,7 +4,7 @@ import com.example.demoinflearnrestapi.accounts.Account;
 import com.example.demoinflearnrestapi.accounts.AccountRepository;
 import com.example.demoinflearnrestapi.accounts.AccountRole;
 import com.example.demoinflearnrestapi.accounts.AccountService;
-import com.example.demoinflearnrestapi.common.BaseControllerTest;
+import com.example.demoinflearnrestapi.common.BaseTest;
 import com.example.demoinflearnrestapi.configs.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class EventControllerTests extends BaseControllerTest {
+public class EventControllerTests extends BaseTest {
 
     @Autowired
     EventRepository eventRepository;
@@ -369,8 +369,8 @@ public class EventControllerTests extends BaseControllerTest {
 
     private String getAccessToken() throws Exception {
         // Given
-        String email = "test@email.com";
-        String password = "test1234";
+        String email = "testAccessToken@email.com";
+        String password = "testAccessToken1234";
         Account account = Account.builder()
                 .email(email)
                 .password(password)
