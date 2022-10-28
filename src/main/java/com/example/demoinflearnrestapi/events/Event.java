@@ -1,6 +1,8 @@
 package com.example.demoinflearnrestapi.events;
 
 import com.example.demoinflearnrestapi.accounts.Account;
+import com.example.demoinflearnrestapi.accounts.AccountSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,6 +33,7 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+    @JsonSerialize(using = AccountSerializer.class)
     @ManyToOne
     private Account manager;
     public void update() {
